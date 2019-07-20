@@ -1,3 +1,5 @@
+// https://www.codewars.com/kata/symbolic-differentiation-of-prefix-expressions
+
 #[derive(Clone, Debug, PartialEq)]
 enum Term {
     Lit(i32),
@@ -53,6 +55,30 @@ fn simplify(term: Term) -> Term {
             (Lit(x), Lit(y)) => Lit(x + y),
             (t1, t2) => Add(Box::new(t1), Box::new(t2))
         },
+        Sub(t1, t2) => match (*simplify_box(t1), *simplify_box(t2)) {
+            (t, Lit(0)) => t,
+            (Lit(x), Lit(y)) => Lit(x - y),
+            (t1, t2) => Sub(Box::new(t1), Box::new(t2))
+        },
+        Mul(t1, t2) => match (*simplify_box(t1), *simplify_box(t2)) {
+            (Lit(1), t) => t,
+            (t, Lit(1)) => t,
+            (Lit(x), Lit(y)) => Lit(x * y),
+            (t1, t2) => Mul(Box::new(t1), Box::new(t2))
+        },
+        Div(t1, t2) => match (*simplify_box(t1), *simplify_box(t2)) {
+            (t, Lit(1)) => t,
+            (Lit(x), Lit(y)) if x % y == 0 => Lit(x / y),
+            (t1, t2) => Div(Box::new(t1), Box::new(t2))
+        },
+        Pow(t1, t2) => match (*simplify_box(t1), *simplify_box(t2)) {
+            (Lit(0), Lit(0)) => Lit(1),
+            (t, Lit(0)) => Lit(1),
+            (t, Lit(1)) => t,
+            (Lit(x), Lit(y)) if y > 0 => Lit(x.pow(y as u32)),
+            (t1, t2) => Pow(Box::new(t1), Box::new(t2))
+        },
+        _ => term
     }
 }
 fn simplify_box(t: Box<Term>) -> Box<Term> {
