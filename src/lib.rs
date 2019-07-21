@@ -1,4 +1,5 @@
 // https://www.codewars.com/kata/symbolic-differentiation-of-prefix-expressions
+use std::str::Chars;
 
 #[derive(Clone, Debug, PartialEq)]
 enum Term {
@@ -85,7 +86,17 @@ fn simplify_box(t: Box<Term>) -> Box<Term> {
     Box::new(simplify(*t))
 }
 
-
+fn parse(input: &mut Chars) -> Result<Term, String> {
+    match input.next() {
+        None => Err(String::from("Ran out of input")),
+        Some('+') => parse_box(input).and_then(|t1| parse_box(input).and_then(|t2| Ok(Add(t1, t2)))),
+        Some('(') => panic!(),
+        _ => panic!()
+    }
+}
+fn parse_box(input: &mut Chars) -> Result<Box<Term>, String> {
+    parse(input).map(Box::new)
+}
 
 #[cfg(test)]
 mod tests {
