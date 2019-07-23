@@ -13,6 +13,8 @@ in
         name = "boolfuck-interpreter";
 
         buildInputs = [
+            lldb
+
             # Required by VSCode's RLS extension
             rustup-faker
             rust1330.rust-analysis
