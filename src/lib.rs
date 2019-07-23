@@ -123,7 +123,7 @@ fn simplify(term: Term) -> Term {
         Cos(t) => Cos(simplify_box(t)),
         Tan(t) => Tan(simplify_box(t)),
         Exp(t) => Exp(simplify_box(t)),
-        Ln(t) => Ln(simplify_box(t))
+        Ln(t) => Ln(simplify_box(t)),
     }
 }
 fn simplify_box(t: Box<Term>) -> Box<Term> {
